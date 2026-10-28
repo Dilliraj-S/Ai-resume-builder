@@ -1,0 +1,64 @@
+.skill-category-block { margin-bottom: 14px; }
+.skill-cat-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px; font-size: 13px;
+}
+.skill-cat-header strong { font-weight: 700; }
+.skill-count {
+  margin-left: auto; font-size: 11px;
+  color: var(--text-muted); font-weight: 600;
+}
+.skill-input-wrap { position: relative; }
+.skill-suggestion-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  z-index: 10;
+}
+.skill-suggestion-item {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.skill-suggestion-item:hover {
+  background: var(--surface-3);
+  color: var(--text-primary);
+}
+
+.suggestions-panel {
+  border: 1.5px solid rgba(30,58,138,0.15);
+  border-radius: var(--radius-md);
+  background: rgba(30,58,138,0.04);
+  padding: 14px; margin-top: 12px;
+  animation: slideDown 0.3s ease;
+}
+.suggestions-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; font-size: 13px;
+}
+
+.summary-tips {
+  background: rgba(30,58,138,0.04);
+  border: 1px solid rgba(30,58,138,0.1);
+  border-radius: var(--radius-md);
+  padding: 14px; margin-top: 12px;
+}
+.tip-title {
+  font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;
+}
+.summary-tips ul { margin-left: 16px; }
+.summary-tips li { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+
+.internship-toggle-row { margin-bottom: 12px; }

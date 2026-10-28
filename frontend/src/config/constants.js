@@ -1,0 +1,38 @@
+export const BASE_URL = '/api';
+
+export const API_TIMEOUT = 30000; // 30 seconds standard timeout
+
+export const DEBOUNCE_DELAY = {
+  AUTO_SAVE: 2000,
+  ATS_CALCULATION: 800,
+};
+
+export const PAGINATION = {
+  PAGE_HEIGHT: 1100,
+  FIRST_PAGE_HEIGHT: 200,
+};
+
+export const VALIDATION = {
+  MAX_NAME_LENGTH: 100,
+  MAX_EMAIL_LENGTH: 255,
+  MAX_PHONE_LENGTH: 20,
+  MAX_SUMMARY_LENGTH: 2000,
+  MAX_DESCRIPTION_LENGTH: 2000,
+};
+
+export const ATS_BREAKDOWN = {
+  CONTACT_INFO: 10,
+  SUMMARY: 15,
+  EXPERIENCE: 25,
+  EDUCATION: 10,
+  SKILLS: 20,
+  PROJECTS: 10,
+  EXTRAS: 10,
+};
+
+export const GRADES = {
+  EXCELLENT: 90,
+  GOOD: 75,
+  FAIR: 60,
+  NEEDS_WORK: 40,
+};

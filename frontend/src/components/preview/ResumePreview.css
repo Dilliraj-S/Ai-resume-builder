@@ -1,0 +1,429 @@
+/* ─── WRAPPER ────────────────────────────────────────────────────────────── */
+/*
+ * Transparent flex column. The parent .builder-preview-panel owns the bg.
+ * width:100% + align-items:flex-start lets the scaled A4 page fill the panel
+ * horizontally with no dead gray bars on either side.
+ */
+.preview-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  gap: 0;
+  box-sizing: border-box;
+  /* Scale variable set by ResizeObserver in ResumePreview.jsx */
+  --preview-scale: 1;
+}
+
+/* ─── LABEL BAR ──────────────────────────────────────────────── */
+/*
+ * Premium compact bar. Sits flush-top, always above the page.
+ * pointer-events:auto is explicit so nothing can accidentally block it.
+ * z-index:10 keeps it above the page shadow.
+ */
+.preview-label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.07);
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;       /* explicit — never let parent override */
+  flex-shrink: 0;
+  min-height: 36px;
+  min-width: 0;
+}
+
+.preview-label > * {
+  min-width: 0;
+}
+
+.preview-label-title {
+  font-weight: 700;
+  color: #64748b;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.preview-template-name {
+  color: #1e3a8a;
+  font-weight: 800;
+  white-space: nowrap;
+  margin-left: auto;          /* push right before the Edit button */
+  font-size: 11px;
+  flex: 1 1 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+/* ─── EDIT BUTTON ────────────────────────────────────────────── */
+/*
+ * Sits at far right of label bar.
+ * pointer-events:auto + isolation:isolate ensures no parent cuts it off.
+ * No onClick handler in JSX — onMouseDown only (see ResumePreview.jsx patch).
+ */
+.preview-edit-btn {
+  flex-shrink: 0;
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%);
+  color: #1e3a8a;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(30, 58, 138, 0.10);
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  pointer-events: auto !important;
+  isolation: isolate;
+  user-select: none;
+  -webkit-user-select: none;
+  line-height: 1.6;
+  z-index: 100 !important;
+  position: relative !important;
+}
+.preview-edit-btn:hover {
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+  border-color: rgba(59, 130, 246, 0.65);
+  color: #1e40af;
+}
+.preview-edit-btn:active {
+  transform: scale(0.96);
+}
+
+/* Done state — green accent */
+.preview-edit-btn--done {
+  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+  border-color: rgba(34, 197, 94, 0.45);
+  color: #15803d;
+}
+.preview-edit-btn--done:hover {
+  background: linear-gradient(135deg, #bbf7d0 0%, #dcfce7 100%);
+  border-color: rgba(34, 197, 94, 0.7);
+}
+
+/* ─── PAGE NAV ───────────────────────────────────────────────── */
+.preview-page-nav {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 999px;
+  padding: 2px 8px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
+  flex-shrink: 0;
+}
+.preview-page-btn {
+  width: 20px; height: 20px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s, color 0.12s, transform 0.12s;
+  pointer-events: auto;
+}
+.preview-page-btn:hover:not(:disabled) {
+  background: #1e3a8a;
+  color: white;
+  transform: scale(1.1);
+}
+.preview-page-btn:disabled { opacity: 0.28; cursor: not-allowed; }
+.preview-page-count {
+  font-size: 10px; font-weight: 800;
+  color: #1e3a8a;
+  white-space: nowrap;
+}
+.preview-page-count--single {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+
+@media (max-width: 520px) {
+  .preview-label {
+    padding: 8px 10px;
+  }
+
+  .preview-template-name {
+    order: 3;
+    flex: 1 1 100%;
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .preview-edit-btn {
+    margin-left: auto;
+  }
+
+  .preview-page-count,
+  .preview-template-name,
+  .preview-edit-btn {
+    font-size: 10px;
+  }
+}
+
+/* ─── EDIT HIGHLIGHT ─────────────────────────────────────────── */
+.preview-editable {
+  box-shadow: inset 0 0 0 1px rgba(15, 76, 129, 0.28);
+  border-radius: 3px;
+  min-height: 14px;
+  outline: none;
+  transition: box-shadow 0.15s ease, background 0.15s ease;
+}
+.preview-editable:focus {
+  box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.9), inset 0 0 8px rgba(59, 130, 246, 0.2) !important;
+  background: rgba(59, 130, 246, 0.08) !important;
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px;
+}
+.preview-editable:empty:before { content: attr(data-placeholder); color: #aaa; }
+
+/* ─── PAGE SCALER ────────────────────────────────────────────── */
+/*
+ * Scaler wraps each visible .preview-page.
+ * --preview-scale is set by the ResizeObserver in ResumePreview.jsx.
+ * Width-first: the scaler fills the full panel width so there's no dead
+ * gray space on either side. The panel scrolls vertically for A4 height.
+ */
+.preview-page-scaler {
+  --s: var(--preview-scale, 1);
+  width:  calc(794px * var(--s));
+  height: calc(1123px * var(--s));
+  position: relative;
+  flex-shrink: 0;
+  margin-bottom: 12px;
+  overflow: visible;
+}
+.preview-page-scaler:last-child { margin-bottom: 0; }
+
+.preview-page-scaler .preview-page {
+  transform-origin: top left;
+  transform: scale(var(--s, 1));
+  position: absolute;
+  top: 0; left: 0;
+  margin: 0 !important;
+}
+
+/* ─── A4 PAGE — ALWAYS 794×1123, NEVER GROWS ─────────────────── */
+.preview-page {
+  width: 794px;
+  min-width: 794px;
+  max-width: 794px;
+  height: 1123px;
+  min-height: 1123px;
+  max-height: 1123px;
+  background: white;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 10px 24px rgba(0, 0, 0, 0.10),
+    0 22px 48px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* ─── PAGE BODY ──────────────────────────────────────────────── */
+.page-body {
+  width: 100%; height: 100%;
+  overflow: hidden; padding: 0;
+  box-sizing: border-box;
+  font-family: var(--tpl-font-family, var(--tpl-font, 'DM Sans')), sans-serif;
+  font-size: var(--tpl-font-size, 11px);
+  line-height: 1.55; color: #111;
+}
+
+/* ─── MEASURE CONTAINER — OFF-SCREEN, ALWAYS HIDDEN ─────────── */
+[data-measure="true"] {
+  position: fixed !important;
+  top: -9999px !important; left: -9999px !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: -9999 !important;
+  width: 794px !important;
+}
+[data-measure="true"] .preview-page {
+  overflow: visible !important; box-shadow: none !important;
+  border-radius: 0 !important; margin: 0 !important;
+  max-height: none !important; transform: none !important;
+  position: relative !important;
+}
+[data-measure="true"] .page-body { overflow: visible !important; height: auto !important; max-height: none !important; }
+[data-measure="true"] .m-item    { overflow: visible !important; }
+
+/* ─── TEMPLATE HEADER ────────────────────────────────────────── */
+.tpl-header { background: var(--tpl-primary); color: white; padding: 18px 20px; width: 100%; box-sizing: border-box; }
+.tpl-header--compact {
+  background: linear-gradient(135deg, var(--tpl-primary), color-mix(in srgb, var(--tpl-primary) 60%, #000 40%));
+  padding: 16px 20px; width: 100%; box-sizing: border-box;
+}
+.tpl-header--minimal {
+  background: white; color: #111;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding: 14px 20px 10px; width: 100%; box-sizing: border-box;
+}
+.tpl-header--minimal .tpl-contact { color: #555; opacity: 1; }
+.tpl-name {
+  font-size: 24px; font-weight: 800; letter-spacing: -0.3px;
+  font-family: 'Syne', sans-serif; margin-bottom: 8px; word-break: break-word;
+}
+.tpl-contact { display: flex; flex-wrap: wrap; gap: 14px; font-size: 10px; opacity: 0.88; }
+.tpl-contact span { display: flex; align-items: center; gap: 4px; }
+.tpl-contact-link { display: flex; align-items: center; gap: 4px; color: inherit; text-decoration: none; }
+.tpl-contact-link:hover { text-decoration: underline; }
+
+/* ─── SECTIONS ───────────────────────────────────────────────── */
+.tpl-section { padding: 6px 20px 1px; }
+.tpl-section-continue { padding-top: 0; padding-bottom: 0; margin-top: 0; }
+.tpl-summary-block .tpl-summary { margin-top: 0; }
+.tpl-section-title {
+  font-size: var(--tpl-font-size, 10.5px);
+  font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--tpl-primary); font-family: 'Syne', sans-serif; margin-bottom: 4px;
+}
+.tpl-divider {
+  height: 2px; background: var(--tpl-primary); width: 36px;
+  margin-bottom: 10px; border-radius: 1px;
+}
+
+/* ─── ENTRY ──────────────────────────────────────────────────── */
+.tpl-entry { margin-bottom: 12px; }
+.tpl-entry-header {
+  display: grid; grid-template-columns: minmax(0,1fr) auto;
+  column-gap: 10px; align-items: baseline; margin-bottom: 4px;
+}
+.tpl-job-title { font-weight: 700; font-size: var(--tpl-font-size, 11.5px); color: #111; }
+.tpl-company   { color: #555; font-size: var(--tpl-font-size, 11px); }
+.tpl-date      { font-size: var(--tpl-font-size, 10px); color: #777; white-space: nowrap; margin-left: 8px; }
+.tpl-cgpa      { font-size: 10px; color: #555; }
+.tpl-edu-meta  { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; margin-left: 12px; }
+
+/* ─── BULLETS ────────────────────────────────────────────────── */
+.tpl-desc { margin-top: 2px; }
+.tpl-summary { font-size: var(--tpl-font-size, 11px); line-height: 1.6; color: #333; margin: 0 0 6px; }
+.tpl-summary:last-child { margin-bottom: 0; }
+.preview-bullets { margin: 2px 0 2px 14px; padding: 0; list-style: none; }
+.preview-bullets li {
+  position: relative; padding-left: 12px;
+  font-size: calc(var(--tpl-font-size, 11px) - 0.5px);
+  margin-bottom: 3px; color: #222; line-height: 1.55;
+}
+.preview-bullets li::before {
+  content: '*'; position: absolute; left: 0;
+  color: var(--tpl-accent, var(--tpl-primary)); font-weight: 700;
+}
+.preview-bullets li.bullet-cont { padding-left: 12px; margin-top: 0; margin-bottom: 0; }
+.preview-bullets li.bullet-cont::before { content: ''; }
+
+/* ─── PROJECTS ───────────────────────────────────────────────── */
+.tpl-project-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+.tpl-tech-stack { display: flex; flex-wrap: wrap; gap: 4px; }
+.tpl-tech-badge {
+  padding: 1px 7px; border-radius: 10px;
+  background: rgba(15,76,129,0.08); color: var(--tpl-primary, #1e3a5f);
+  font-size: calc(var(--tpl-font-size, 11px) - 2px); font-weight: 600;
+}
+
+/* ─── SKILLS ─────────────────────────────────────────────────── */
+.tpl-skills { display: flex; flex-direction: column; gap: 5px; }
+.tpl-skill-row { display: flex; align-items: baseline; gap: 8px; }
+.tpl-skill-cat { font-weight: 700; font-size: var(--tpl-font-size, 10px); color: var(--tpl-primary); min-width: 72px; flex-shrink: 0; text-transform: capitalize; }
+.tpl-skill-vals { font-size: var(--tpl-font-size, 10.5px); color: #333; line-height: 1.5; }
+
+/* ─── CERTIFICATIONS ─────────────────────────────────────────── */
+.tpl-cert-entry { margin-bottom: 6px; font-size: var(--tpl-font-size, 10.5px); }
+
+/* ─── EMPTY STATE ────────────────────────────────────────────── */
+.preview-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 80px 40px; text-align: center; color: #94a3b8;
+}
+.preview-empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+.preview-empty p { font-size: 14px; max-width: 280px; line-height: 1.6; }
+
+/* ─── SIDEBAR LAYOUT ─────────────────────────────────────────── */
+.tpl-layout-grid { display: grid; grid-template-columns: 210px 1fr; min-height: 1123px; }
+.tpl-side {
+  background: color-mix(in srgb, var(--tpl-primary) 10%, white 90%);
+  border-right: 1px solid rgba(0,0,0,0.08);
+  padding: 18px 16px; display: flex; flex-direction: column; gap: 12px;
+}
+.tpl-side-header { padding-bottom: 10px; border-bottom: 2px solid var(--tpl-primary); }
+.tpl-side-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: var(--tpl-font-size, 16px); margin-bottom: 8px; color: var(--tpl-primary); }
+.tpl-side-contact { display: flex; flex-direction: column; gap: 6px; font-size: var(--tpl-font-size, 10px); color: #333; }
+.tpl-side-contact .tpl-contact-link { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+.tpl-side-contact .tpl-contact-link:hover { text-decoration: underline; }
+.tpl-main { padding: 6px 0; }
+.tpl-layout-sidebar .tpl-section { padding: 12px 22px 2px; }
+.tpl-layout-sidebar .tpl-section-title { font-size: var(--tpl-font-size, 10px); }
+
+/* ─── COLUMNS LAYOUT ─────────────────────────────────────────── */
+.tpl-columns { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px; padding: 4px 0 10px; }
+.tpl-layout-columns .tpl-section { padding: 12px 22px 2px; }
+
+/* ─── MINIMAL LAYOUT ─────────────────────────────────────────── */
+.tpl-layout-minimal .tpl-section-title { letter-spacing: 1px; color: #111; }
+.tpl-layout-minimal .tpl-divider { background: #111; width: 22px; }
+.tpl-layout-minimal .tpl-header .tpl-name { color: #111; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .preview-label {
+    font-size: 10px;
+    padding: 5px 10px;
+    margin-bottom: 6px;
+    min-height: 32px;
+  }
+  .preview-template-name { display: none; }
+}
+
+@media (max-width: 720px) {
+  .preview-label {
+    font-size: 10px;
+    padding: 5px 8px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    gap: 6px;
+    min-height: 30px;
+  }
+  .preview-page-scaler { margin-bottom: 8px; }
+  /* Sidebar/columns collapse on narrow screens */
+  .tpl-layout-grid { grid-template-columns: 1fr; }
+  .tpl-side { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.08); }
+  .tpl-columns { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .preview-label { flex-wrap: wrap; min-height: auto; }
+  .preview-edit-btn { font-size: 10px; padding: 3px 10px; }
+  .preview-template-name { display: none; }
+}

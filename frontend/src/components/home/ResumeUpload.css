@@ -1,0 +1,133 @@
+.resume-upload {
+  border: 2px dashed #e2e8f0;
+  border-radius: 16px;
+  padding: 48px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+  position: relative;
+  overflow: hidden;
+}
+
+.resume-upload:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.resume-upload.dragging {
+  border-color: #3b82f6;
+  background: #dbeafe;
+  transform: scale(1.02);
+}
+
+.resume-upload.uploading {
+  cursor: wait;
+  pointer-events: none;
+}
+
+.upload-content {
+  position: relative;
+  z-index: 1;
+}
+
+.upload-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.resume-upload h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.resume-upload p {
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.resume-upload p span {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.upload-formats {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.upload-formats span {
+  background: #dcfce7;
+  color: #166534;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.upload-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.upload-loading .spin {
+  animation: spin 1s linear infinite;
+  color: #3b82f6;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.upload-loading p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.upload-loading span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.upload-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 14px;
+}
+
+.resume-upload.dragging .upload-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+}

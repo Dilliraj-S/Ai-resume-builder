@@ -1,0 +1,50 @@
+.resize-handle {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.resize-handle.horizontal {
+  width: 8px;
+  cursor: col-resize;
+}
+
+.resize-handle.vertical {
+  height: 8px;
+  cursor: row-resize;
+}
+
+.resize-handle-bar {
+  position: absolute;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.resize-handle.horizontal .resize-handle-bar {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+}
+
+.resize-handle.vertical .resize-handle-bar {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.resize-handle:hover .resize-handle-bar,
+.resize-handle.active .resize-handle-bar {
+  background: var(--primary);
+}
+
+.resize-handle.active {
+  background: rgba(15, 76, 129, 0.05);
+}
+
+@media (max-width: 960px) {
+  .resize-handle {
+    display: none;
+  }
+}
